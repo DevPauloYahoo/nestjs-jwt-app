@@ -11,14 +11,16 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 
+import { Public } from '../../auth/decorators/auth.decorator';
+import { AuthJwtGuard } from '../../auth/guards/auth-jwt.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
 @Controller('api/users')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthJwtGuard)
+// @UseGuards(AuthGuard('jwt'))
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -27,6 +29,7 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
+  @Public()
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async store(@Body() user: CreateUserDto) {
